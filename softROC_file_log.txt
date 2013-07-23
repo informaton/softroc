@@ -1,0 +1,5 @@
+
+23-Jul-2013 10:01:27	/Volumes/Macintosh HD 2/Data/Narcolepsy/result - Hyatt 3.txt
+	Gold Standard = Dx	Positivity Value = 1.00
+	     	Hcrt1	>= [0.00 : 100.00]  
+	AND  	hcrt2	>= [0.00 : 100.00]  

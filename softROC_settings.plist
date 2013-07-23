@@ -22,8 +22,6 @@
 	<real>0.000000</real>
 	<key>binop_string</key>
 	<string>==</string>
-	<key>exclude_string_value</key>
-	<string></string>
 	<key>steps_by_count</key>
 	<real>0.000000</real>
 	<key>steps_by_delta</key>
@@ -38,5 +36,7 @@
 	<string>softROC_settings.plist</string>
 	<key>log_filename</key>
 	<string>softROC_file_log.txt</string>
+	<key>exclude_string_value</key>
+	<string></string>
 </dict>
 </plist>
