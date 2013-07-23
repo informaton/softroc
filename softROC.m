@@ -458,9 +458,13 @@ if(isempty(diagnosis_value))
 else
     controlStruct.positive_diagnosis_value = diagnosis_value;
 end
-
-controlStruct.raw = cell2mat(handles.data.raw(:,handles.controls.indices(controlStruct.index)));
-       
+if(ischar(handles.data.raw{1,handles.controls.indices(controlStruct.index)}))
+    controlStruct.raw =strcmp(controlStruct.positive_diagnosis_value,handles.data.raw(:,handles.controls.indices(controlStruct.index)));
+    controlStruct.positive_diagnosis_value = 1;
+%     controlStruct.raw = char(handles.data.raw(:,handles.controls.indices(controlStruct.index)));
+else
+    controlStruct.raw = cell2mat(handles.data.raw(:,handles.controls.indices(controlStruct.index)));
+end   
 
 
 function configStruct = getParameterConfigurations(handles)
