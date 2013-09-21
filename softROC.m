@@ -631,6 +631,8 @@ else
         uimenu(uicontextmenu_handle,'Label','Get unbiased ROC for optimal point','separator','off','callback',{@contextmenu_unbiased_optimal_point_callback,handles,userdata});
         uimenu(uicontextmenu_handle,'Label','Show AUC for outermost curve','separator','off','callback',{@contextmenu_outer_AUC_callback,handles,userdata});
         uimenu(uicontextmenu_handle,'Label','Bootstrap AUC 95% CI for outermost curve','separator','off','callback',{@contextmenu_bootstrap_outer_AUC_callback,handles,userdata});
+        uimenu(uicontextmenu_handle,'Label','Show outermost curve','separator','off','callback',{@contextmenu_show_outermost_curve_callback,handles,userdata});
+        
         set(userdata.roc_axes_h,'uicontextmenu',uicontextmenu_handle);
         
         %context menu for the line
@@ -759,6 +761,22 @@ function contextmenu_bootstrap_outer_AUC_callback(hObject,eventdata,handles,fig_
 %calculates the area under the curve of the outermost curve....
 getAUC_flag = true;
 bootstrapFcn(hObject,eventdata,handles,[],getAUC_flag);
+
+function contextmenu_show_outermost_curve_callback(hObject,eventdata,handles,fig_userdata)
+%draw a curve from the given points
+
+optimal_indices = getOutermostROCIndices(fig_userdata.TPR,fig_userdata.FPR);
+outer_TPR = [0;fig_userdata.TPR(optimal_indices);1];
+outer_FPR = [0;fig_userdata.FPR(optimal_indices);1];
+userdata = get(gcf,'userdata');
+set(userdata.roc_axes_h,'nextplot','add');
+if(strcmpi(get(userdata.roc_h,'tag'),'se_vs_sp'))
+    plot(userdata.roc_axes_h,1-outer_FPR,outer_TPR,'k:','hittest','off');
+else
+    plot(userdata.roc_axes_h,outer_FPR,outer_TPR,'k:','hittest','off');
+end
+
+
 
 
 function contextmenu_outer_AUC_callback(hObject,eventdata,handles,fig_userdata)
@@ -1053,6 +1071,32 @@ optimal_ind = find(max(model_fcn)==model_fcn,1);
 % userdata.tROC_fig;
 ROC_Callback(userdata.roc_h,[],userdata,optimal_ind);
 
+
+function makeTitle(handles)
+
+params = handles.user.paramStruct.params;
+group_cell = handles.user.grouping_cell;
+group_mat = zeros(numel(params),2);
+for k = 1:numel(group_cell)
+    group_mat(group_cell{k}(1),1) = 1;
+    group_mat(group_cell{k}(2),2) = 1;
+end
+titleStr = '';
+for k=1:numel(params)
+
+    group_label = '  ';
+    if(group_mat(k,1))
+        group_label(1) = '(';
+    end
+    if(group_mat(k,2))
+        group_label(2) = ')';
+    end
+    
+    titleStr = sprintf('%s%s %c%s%c ',titleStr,params(k).logic,group_label(1),params(k).label,group_label(2));
+    
+end
+title(titleStr,'fontsize',12);
+
 function varargout = plotResults(handles,confusion, sample_size, optional_config_mat)
 %plotResults(handles,confusion, sample_size, optional_config_mat)
 % generates two interactive figures from the supplied confusion matrix and
@@ -1078,21 +1122,21 @@ function varargout = plotResults(handles,confusion, sample_size, optional_config
 
     if(handles.user.settings.plot_tpr_vs_fpr)
         roc_h = plot(FPR,TPR,'b.','markersize',10);
-        xlabel('False Positive Rate');
-        ylabel('True Positive Rate');
+        xlabel('False Positive Rate','fontsize',12);
+        ylabel('True Positive Rate','fontsize',12);
         tag = 'tpr_vs_fpr';
     else
         roc_h= plot(1-FPR,TPR,'b.','markersize',10);
-        xlabel('Specificity');
-        ylabel('Sensitivity');
+        xlabel('Specificity','fontsize',12);
+        ylabel('Sensitivity','fontsize',12);
         tag = 'se_vs_sp';
     end
     roc_highlight_h = line('parent',gca,'linestyle','none','hittest','off','marker','o',...
         'visible','off','color','r','markersize',12,'tag','highlighter','userdata',tag); %keep the tag to differentiate between the two plot configurations for the tROC
-    title('Test Receiver Operating Characteristics (tROC)');
-    
+%     title('Test Receiver Operating Characteristics (tROC)','fontsize',12);
+    makeTitle(handles);
     %     roc_text_h = text('parent',gca,'visible','off','edgecolor','k','hittest','off','position',[0.05,0.15,0]);
-    roc_text_h = annotation(gcf,'textbox','visible','off','edgecolor','k','hittest','off','fitboxtotext','on'); %,position',[0.175,0.25,0.1,0.1]);
+    roc_text_h = annotation(gcf,'textbox','visible','off','edgecolor','k','hittest','off','fitboxtotext','on','fontsize',12); %,position',[0.175,0.25,0.1,0.1]);
     roc_axes_h = gca;
     
     qROC_fig = figure;
@@ -1100,14 +1144,14 @@ function varargout = plotResults(handles,confusion, sample_size, optional_config
     
     qroc_h= plot(K_0_0,K_1_0,'r.','markersize',10);
     %     qroc_text_h = text('parent',gca,'visible','off','edgecolor','k','hittest','off','position',[0.05,0.15,0]);
-    qroc_text_h = annotation(gcf,'textbox','visible','off','edgecolor','k','hittest','off','fitboxtotext','on');%'position',[0.175,0.25,0.1,0.1]);
+    qroc_text_h = annotation(gcf,'textbox','visible','off','edgecolor','k','hittest','off','fitboxtotext','on','fontsize',12);%'position',[0.175,0.25,0.1,0.1]);
     qroc_axes_h = gca;
     qroc_highlight_h = line('parent',gca,'linestyle','none','hittest','off','marker','o',...
         'visible','off','color','g','markersize',12,'tag','highlighter');
     
     xlabel('\kappa (0,0)');
     ylabel('\kappa (1,0)');
-    title('Quality Receiver Operating Characteristics (qROC)');
+    title('Quality Receiver Operating Characteristics (qROC)','fontsize',12);
     
     userdata.qroc_text_h = qroc_text_h;
     userdata.roc_text_h = roc_text_h;
@@ -1441,20 +1485,20 @@ if(~strcmp(get(gcf,'selectiontype'),'alt') || ~isempty(config_ind))
             decimal_format = ['%0.',num2str(userdata.decimal_places,'%d'),'f'];
             
             if(strcmpi(plot_config,'tpr_vs_fpr'))
-                xlabel = 'False Positive Rate';
-                ylabel= 'True Positive Rate';
+                xlabelStr = 'False Positive Rate';
+                ylabelStr= 'True Positive Rate';
                 xdata = userdata.FPR(config_ind);
             else
-                ylabel = 'Sensitivity';
-                xlabel = 'Specificity';
+                ylabelStr = 'Sensitivity';
+                xlabelStr = 'Specificity';
                 xdata = 1-userdata.FPR(config_ind);
             end
-            roc_text_label = {[xlabel,' = ',num2str(xdata,decimal_format)],[ylabel,' = ',num2str(userdata.TPR(config_ind),decimal_format)]};
+            roc_text_label = {[ylabelStr,' = ',num2str(userdata.TPR(config_ind),decimal_format)],[xlabelStr,' = ',num2str(xdata,decimal_format)]};
             
-            ylabel = '\kappa(1,0)';
-            xlabel = '\kappa(0,0)';
+            ylabelStr = '\kappa(1,0)';
+            xlabelStr = '\kappa(0,0)';
             
-            qroc_text_label = {[xlabel,' = ',num2str(userdata.K_0_0(config_ind),decimal_format)],[ylabel,' = ',num2str(userdata.K_1_0(config_ind),decimal_format)]};
+            qroc_text_label = {[ylabelStr,' = ',num2str(userdata.K_1_0(config_ind),decimal_format)],[xlabelStr,' = ',num2str(userdata.K_0_0(config_ind),decimal_format)]};
             
             for k = 1:numel(userdata.param_labels)
                 qroc_text_label{end+1} = [userdata.param_labels{k},' = ',num2str(userdata.config_mat(config_ind,k),decimal_format)];

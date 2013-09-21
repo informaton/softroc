@@ -9,7 +9,7 @@
 	<key>se_vs_sp_alpha</key>
 	<real>0.500000</real>
 	<key>plot_option</key>
-	<string>All ROC results</string>
+	<string>Optimal ROC results</string>
 	<key>decimal_places</key>
 	<real>2.000000</real>
 	<key>exclude_number_data</key>
@@ -31,7 +31,7 @@
 	<key>plot_se_vs_sp</key>
 	<real>1.000000</real>
 	<key>current_pathname</key>
-	<string>/Volumes/Macintosh HD 2/Data/Narcolepsy/</string>
+	<string>/Users/hyattmoore/Google Drive/work/softROC requests/</string>
 	<key>pfile</key>
 	<string>softROC_settings.plist</string>
 	<key>log_filename</key>

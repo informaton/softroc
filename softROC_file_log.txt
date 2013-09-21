@@ -3,3 +3,8 @@
 	Gold Standard = Dx	Positivity Value = 1.00
 	     	Hcrt1	>= [0.00 : 100.00]  
 	AND  	hcrt2	>= [0.00 : 100.00]  
+
+04-Aug-2013 13:20:21	/Users/hyattmoore/Google Drive/work/softROC requests/result - forBirgitte paper.txt
+	Gold Standard = Dx	Positivity Value = 1.00
+	     	HCRT_5_6_-_6_8	>= [1.00 : 100.00]  
+	AND  	HCRT_8_7_-_9_9	>= [1.00 : 100.00]  
