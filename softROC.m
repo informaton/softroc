@@ -314,8 +314,13 @@ if(filename~=0)
         
      catch ME
          disp(ME.message);
-         disp('There was an error loading the file.  Verify its integrity and Excel format.');
-         disp('If error invovles ''biffparse'' try saving the XLS file using Microsoft Excel 95 format.');
+         if(isempty(handles.controls.indices))
+             disp('There was an error loading the file.  At least one column must contain two, and only two unique indices to represent the gold standard evaluation');
+         else
+             disp('There was an error loading the file.  Verify its integrity and Excel format.');
+             disp('If error invovles ''biffparse'' try saving the XLS file using Microsoft Excel 95 format.');
+             
+         end
          
          set(handles.text_filename,'string','The file could not be loaded - please verify its format','enable','inactive');
      end
