@@ -8,3 +8,11 @@
 	Gold Standard = Dx	Positivity Value = 1.00
 	     	HCRT_5_6_-_6_8	>= [1.00 : 100.00]  
 	AND  	HCRT_8_7_-_9_9	>= [1.00 : 100.00]  
+
+18-Feb-2014 11:53:09	/Users/hyatt4/Google Drive/work/softROC requests/result - alberto.txt
+	Gold Standard = IsIt0	Positivity Value = 1.00
+	     	Prediction	< [0.00 : 20000.00]  
+
+18-Feb-2014 12:07:58	/Users/hyatt4/Google Drive/work/softROC requests/result - alberto_strong vs weak or not.txt
+	Gold Standard = IsIt2	Positivity Value = 1.00
+	     	Prediction	< [0.00 : 20000.00]  

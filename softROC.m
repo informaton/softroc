@@ -241,7 +241,33 @@ if(filename~=0)
      try
          
         [number,txt,raw]=xlsread(full_filename,1,'','basic');
+        
+        settings = handles.user.settings;
+        
+
+        %exclude bad rows on launch?     
+        if(settings.exclude_number_data)
+            numRows = size(raw,1)-1;
+            numCols = size(raw,2);
+            bad_rows =  false(numRows,1);
+            for k=1:numCols                
+                data = raw(2:end,k);
+                if(iscellstr(data))
+                    
+                else
+                    bad_rows =  bad_rows | feval(settings.binop_number,cell2mat(data),settings.exclude_number_value);
+                end
+
+            end
+            
+            bad_rows = [false;bad_rows];
+            raw(bad_rows,:) = [];
+        end
+        
         handles.user.filename = filename;
+        
+        
+        
         
         numCols = size(raw,2);
         unique_ind = false(1,numCols);
