@@ -141,7 +141,12 @@ if(~isempty(settings))
     set(handles.slider_se_vs_sp,'value',settings.se_vs_sp_alpha);
     slider_se_vs_sp_motion_callback(handles.slider_se_vs_sp,[]);  %update the text fields
     
-%     addlistener(handles.slider_se_vs_sp,'ContinuousValueChange',@slider_se_vs_sp_motion_callback);
+    try
+        addlistener(handles.slider_se_vs_sp,'ContinuousValueChange',@slider_se_vs_sp_motion_callback);
+    catch me
+       % fail silently; 
+    end
+       
     % Update handles structure
     guidata(hObject, handles);
     
