@@ -241,7 +241,33 @@ if(filename~=0)
      try
          
         [number,txt,raw]=xlsread(full_filename,1,'','basic');
+        
+        settings = handles.user.settings;
+        
+
+        %exclude bad rows on launch?     
+        if(settings.exclude_number_data)
+            numRows = size(raw,1)-1;
+            numCols = size(raw,2);
+            bad_rows =  false(numRows,1);
+            for k=1:numCols                
+                data = raw(2:end,k);
+                if(iscellstr(data))
+                    
+                else
+                    bad_rows =  bad_rows | feval(settings.binop_number,cell2mat(data),settings.exclude_number_value);
+                end
+
+            end
+            
+            bad_rows = [false;bad_rows];
+            raw(bad_rows,:) = [];
+        end
+        
         handles.user.filename = filename;
+        
+        
+        
         
         numCols = size(raw,2);
         unique_ind = false(1,numCols);
@@ -314,8 +340,13 @@ if(filename~=0)
         
      catch ME
          disp(ME.message);
-         disp('There was an error loading the file.  Verify its integrity and Excel format.');
-         disp('If error invovles ''biffparse'' try saving the XLS file using Microsoft Excel 95 format.');
+         if(isempty(handles.controls.indices))
+             disp('There was an error loading the file.  At least one column must contain two, and only two unique indices to represent the gold standard evaluation');
+         else
+             disp('There was an error loading the file.  Verify its integrity and Excel format.');
+             disp('If error invovles ''biffparse'' try saving the XLS file using Microsoft Excel 95 format.');
+             
+         end
          
          set(handles.text_filename,'string','The file could not be loaded - please verify its format','enable','inactive');
      end
