@@ -242,8 +242,7 @@ if(filename~=0)
          
         [number,txt,raw]=xlsread(full_filename,1,'','basic');
         
-        settings = handles.user.settings;
-        
+        settings = handles.user.settings;        
 
         %exclude bad rows on launch?     
         if(settings.exclude_number_data)
@@ -252,12 +251,9 @@ if(filename~=0)
             bad_rows =  false(numRows,1);
             for k=1:numCols                
                 data = raw(2:end,k);
-                if(iscellstr(data))
-                    
-                else
+                if ~iscellstr(data)                     %#ok<ISCLSTR>
                     bad_rows =  bad_rows | feval(settings.binop_number,cell2mat(data),settings.exclude_number_value);
                 end
-
             end
             
             bad_rows = [false;bad_rows];
@@ -265,9 +261,6 @@ if(filename~=0)
         end
         
         handles.user.filename = filename;
-        
-        
-        
         
         numCols = size(raw,2);
         unique_ind = false(1,numCols);
@@ -301,7 +294,7 @@ if(filename~=0)
         
         if(~iscell(handles.controls.labels))
             handles.controls.labels = {handles.controls.labels};
-        end;
+        end
 
         set(handles.check_start1,'enable','on');
         set(handles.check_end1,'enable','on');
@@ -339,20 +332,20 @@ if(filename~=0)
         set(handles.text_filename,'string',filename,'enable','inactive');
         
      catch ME
-         disp(ME.message);
-         if(isempty(handles.controls.indices))
-             disp('There was an error loading the file.  At least one column must contain two, and only two unique indices to represent the gold standard evaluation');
+         fprintf(newline);
+         if isfield(handles, 'controls') && isempty(handles.controls.indices)
+             warningMsg = sprintf('There was an error loading the file.\n\nAt least one column must contain two, and only two unique indices to represent the gold standard evaluation');             
          else
-             disp('There was an error loading the file.  Verify its integrity and Excel format.');
-             disp('If error invovles ''biffparse'' try saving the XLS file using Microsoft Excel 95 format.');
-             
-         end
-         
+             warningMsg = sprintf('There was an error loading the file.\n\nVerify its integrity and Excel format. If the error involves ''biffparse'' try saving the XLS file using Microsoft Excel 95 format.');             
+         end         
+         warningMsg = sprintf('%s\n\nError: %s', warningMsg, ME.message);
+         fprintf(1, '\n%s\n\n',warningMsg);
+         warndlg(warningMsg, 'Warning','modal');
          set(handles.text_filename,'string','The file could not be loaded - please verify its format','enable','inactive');
      end
      plist.saveXMLPlist(handles.user.settings.pfile,handles.user.settings); %do this to save the most recent change to the pathname...
      
-end;
+end
 
 guidata(hObject,handles);
 
