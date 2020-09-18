@@ -268,10 +268,14 @@ if(filename~=0)
         for k=1:numCols
             
             data = raw(2:end,k);
-            if(iscellstr(data))
+            ischarData = cellfun(@ischar, data);
+            b = 0;
+            if all(ischarData)
                 b = unique(data);
-            else
+            elseif ~any(ischarData)
                 b = unique(cell2mat(data));
+            else
+                fprintf('Warning: Column %d contains a mix of numeric and character data and should not be used for testing.\n', k);
             end
             if(numel(b)==2)
                 unique_ind(k)=true;
@@ -332,6 +336,7 @@ if(filename~=0)
         set(handles.text_filename,'string',filename,'enable','inactive');
         
      catch ME
+         % showME(ME);
          fprintf(newline);
          if isfield(handles, 'controls') && isempty(handles.controls.indices)
              warningMsg = sprintf('There was an error loading the file.\n\nAt least one column must contain two, and only two unique indices to represent the gold standard evaluation');             
