@@ -275,7 +275,7 @@ if(filename~=0)
             elseif ~any(ischarData)
                 b = unique(cell2mat(data));
             else
-                fprintf('Warning: Column %d contains a mix of numeric and character data and should not be used for testing.\n', k);
+                fprintf('Warning: Column %d contains a mix of numeric and character data and should not be used for analysis here.\n', k);
             end
             if(numel(b)==2)
                 unique_ind(k)=true;
